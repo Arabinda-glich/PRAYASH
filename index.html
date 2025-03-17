@@ -3,147 +3,577 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRAYASH EMI CALCULATOR</title>
+    <title>PRAYASH EMI SCHEDULE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
-        /* Basic CSS Styling (You can add more as needed) */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #ffffff, #f0f4f8);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(252, 182, 159, 0.3);
+            padding: 25px;
+            border: 2px solid #ff4081;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         h2 {
-            color: #333;
+            color: #e91e63;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(233, 30, 99, 0.4);
+            letter-spacing: 1.5px;
+            background: linear-gradient(45deg, #ff4081, #f06292);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        form {
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff3e0, #ffebee);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(255, 243, 224, 0.5);
+            border: 1px solid #ff8a80;
         }
         label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #d81b60;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 3px rgba(216, 27, 96, 0.3);
         }
-        input[type="text"],
-        input[type="number"],
-        input[type="password"] {
+        input {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding is included in width */
+            padding: 14px 18px;
+            border: 2px solid #ff8a80;
+            border-radius: 12px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #fff, #fff3e0);
+            color: #2c3e50;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            box-shadow: 0 3px 10px rgba(255, 138, 128, 0.3);
+        }
+        input:focus {
+            border-color: #f06292;
+            box-shadow: 0 5px 15px rgba(240, 98, 146, 0.6);
+            transform: translateY(-2px);
+            outline: none;
+        }
+        input:hover:not(:focus) {
+            box-shadow: 0 4px 12px rgba(255, 138, 128, 0.5);
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
         }
         button {
-            background-color: #5cb85c;
-            color: white;
-            padding: 10px 15px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 4px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ff4081, #f06292);
+            color: white;
             cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            box-shadow: 0 6px 15px rgba(255, 64, 129, 0.5);
+            flex: 1 1 45%;
+            max-width: 150px;
         }
         button:hover {
-            background-color: #449d44;
+            background: linear-gradient(45deg, #e91e63, #d81b60);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(233, 30, 99, 0.6);
         }
-        #emiDetails {
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.4);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 15px;
+            overflow-x: auto;
+            box-shadow: 0 8px 25px rgba(252, 182, 159, 0.4);
+            display: block;
+            animation: slideUp 0.8s ease-in-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            min-width: 80px;
         }
         th {
-            background-color: #f2f2f2;
+            background: linear-gradient(90deg, #7b1fa2, #9c27b0);
+            color: white;
+            font-weight: 700;
+            font-size: 1em;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f3e5f5;
+        }
+        tr:hover {
+            background-color: #ede7f6;
+            transition: background-color 0.3s;
+        }
+        tfoot td {
+            padding: 12px;
+            background: #e0f7fa;
+        }
+        .chart-container {
+            max-width: 100%;
+            margin: 30px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f2f1, #b2ebf2);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(178, 235, 242, 0.5);
+            animation: fadeIn 1.2s ease-in-out;
+        }
+        .summary {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #00695c;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(178, 223, 219, 0.5);
+        }
+        .summary span {
+            font-weight: 700;
+            color: #d81b60;
+            text-shadow: 1px 1px 4px rgba(216, 27, 96, 0.3);
         }
 
-        /* Responsive layout */
-        @media (max-width: 600px) {
-            body {
-                margin: 10px;
+        @media (min-width: 768px) {
+            .input-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 25px;
+            }
+            input {
+                padding: 18px 20px;
+                font-size: 1.3em;
+            }
+            .button-group {
+                gap: 20px;
+            }
+            button {
+                padding: 15px 35px;
+                font-size: 1.2em;
+                flex: 0 1 auto;
+                max-width: none;
+            }
+            h2 {
+                font-size: 2.8em;
+            }
+            .summary {
+                font-size: 1.5em;
+            }
+            table {
+                display: table;
+                overflow-x: visible;
+            }
+            th, td {
+                padding: 18px;
+                min-width: auto;
+            }
+            th {
+                font-size: 1.2em;
             }
         }
     </style>
 </head>
 <body>
-
-    <h2>PRAYASH EMI CALCULATOR</h2>
-
-    <form id="adminLoginForm">
-        <h3>Admin Log In</h3>
-        <label for="adminID">Admin ID:</label>
-        <input type="text" id="adminID" name="adminID">
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password">
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <form id="emiForm">
-        <label for="fullName">Full Name:</label>
-        <input type="text" id="fullName" name="fullName">
-
-        <label for="loanDate">Date of Loan:</label>
-        <input type="text" id="loanDate" name="loanDate">
-
-        <label for="term">Term (in Months):</label>
-        <input type="number" id="term" name="term">
-
-        <label for="interestRate">Interest Rate (% per annum):</label>
-        <input type="number" id="interestRate" name="interestRate">
-
-        <label for="loanAmount">Loan Amount:</label>
-        <input type="number" id="loanAmount" name="loanAmount">
-
-        <button type="button" onclick="calculateEMI()">Calculate EMI</button>
-        <button type="button">Download Quotation</button>
-    </form>
-
-    <div id="emiDetails">
-        <h3>EMI Details</h3>
-        <p>EMI Amount: </p>
-        <p>Total Principal: </p>
-        <p>Total Interest: </p>
-        <p>Total Payment (Rounded Up): </p>
-
-        <h4>Monthly Breakdown</h4>
-        <table>
+    <div class="container">
+        <h2>PRAYASH EMI SCHEDULE</h2>
+        <div class="input-group">
+            <div>
+                <label>Name</label>
+                <input type="text" id="borrowerName" placeholder="Enter name">
+            </div>
+            <div>
+                <label>Loan Date</label>
+                <input type="date" id="loanDate">
+            </div>
+            <div>
+                <label>Loan Amount</label>
+                <input type="number" id="loanAmount" value="10000" oninput="calculateEMI()">
+            </div>
+            <div>
+                <label>Tenure (Months)</label>
+                <input type="number" id="tenure" value="12" oninput="calculateEMI()">
+            </div>
+            <div>
+                <label>Interest Rate (% per month)</label>
+                <input type="number" id="interestRate" value="1.5" step="0.01" oninput="calculateEMI()">
+            </div>
+            <div>
+                <label>Initial EMI</label>
+                <input type="number" id="emi" readonly>
+            </div>
+        </div>
+        <div class="button-group">
+            <button onclick="generateAmortizationSchedule()">Calculate</button>
+            <button onclick="exportToCSV()">Export CSV</button>
+            <button onclick="exportToPDF()">Export PDF</button>
+            <button onclick="clearExtraPayments()">Clear Extras</button>
+        </div>
+        
+        <table id="breakdownTable">
             <thead>
                 <tr>
                     <th>Month</th>
-                    <th>EMI Date</th>
-                    <th>Principal</th>
+                    <th>Date</th>
+                    <th>Start Bal</th>
+                    <th>EMI</th>
                     <th>Interest</th>
-                    <th>Total</th>
+                    <th>Principal</th>
+                    <th>End Bal</th>
                     <th>Extra</th>
-                    <th>Total Paid</th>
+                    <th>Paid</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Monthly breakdown rows will be added here by JavaScript -->
-            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7"></td>
+                    <td><button onclick="submitExtraPayments()">Apply Extras</button></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+            <tbody></tbody>
         </table>
+        <div class="summary">
+            <p>Total Interest: <span id="totalInterest">0.00</span></p>
+            <p>Total Payment: <span id="totalPayment">0.00</span></p>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="paymentChart"></canvas>
+        </div>
     </div>
-
+    
     <script>
-        // Basic JavaScript (You'll need to implement the actual calculation)
-        function calculateEMI() {
-            alert("EMI calculation function needs to be implemented.");
-            // Implement your EMI calculation logic here
-        }
-    </script>
+        let chart;
+        let extraPayments = {};
 
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function calculateEMI(loanAmount, interestRate, tenure) {
+            const r = interestRate / 100;
+            const n = tenure;
+            const emi = (loanAmount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            return Math.ceil(emi);
+        }
+
+        function generateAmortizationSchedule() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            let tenure = parseInt(document.getElementById('tenure').value);
+            const loanDateInput = document.getElementById('loanDate').value;
+            const loanDate = loanDateInput ? new Date(loanDateInput) : new Date();
+
+            let currentEMI = calculateEMI(loanAmount, interestRate, tenure);
+            document.getElementById('emi').value = currentEMI;
+
+            let balance = loanAmount;
+            let totalInterest = 0;
+            let tbody = document.querySelector('#breakdownTable tbody');
+            tbody.innerHTML = '';
+
+            let principalData = [];
+            let interestData = [];
+            let schedule = [];
+
+            for (let month = 1; month <= tenure; month++) {
+                let interest = balance * (interestRate / 100);
+                let principal = currentEMI - interest;
+                
+                if (principal > balance) principal = balance;
+                let remainingBalance = balance - principal;
+                
+                totalInterest += interest;
+
+                let date = new Date(loanDate);
+                date.setMonth(date.getMonth() + month);
+                date.setDate(10);
+                const formattedDate = formatDate(date);
+
+                schedule.push({
+                    month,
+                    date: formattedDate,
+                    beginningBalance: balance,
+                    emi: currentEMI,
+                    interest,
+                    principal,
+                    remainingBalance,
+                    extraPayment: extraPayments[month] || 0,
+                    totalPaid: currentEMI + (extraPayments[month] || 0)
+                });
+
+                balance = remainingBalance;
+            }
+
+            for (let i = 0; i < schedule.length - 1; i++) {
+                if (schedule[i].extraPayment > 0) {
+                    schedule[i].remainingBalance -= schedule[i].extraPayment;
+                    
+                    let remainingTenure = tenure - (i + 1);
+                    if (remainingTenure > 0 && schedule[i].remainingBalance > 0) {
+                        currentEMI = calculateEMI(schedule[i].remainingBalance, interestRate, remainingTenure);
+                    }
+                    
+                    for (let j = i + 1; j < schedule.length; j++) {
+                        let prevRemaining = schedule[j - 1].remainingBalance;
+                        schedule[j].beginningBalance = prevRemaining;
+                        schedule[j].emi = currentEMI;
+                        schedule[j].interest = prevRemaining * (interestRate / 100);
+                        schedule[j].principal = currentEMI - schedule[j].interest;
+                        
+                        if (schedule[j].principal > prevRemaining) {
+                            schedule[j].principal = prevRemaining;
+                        }
+                        
+                        schedule[j].remainingBalance = prevRemaining - schedule[j].principal;
+                        schedule[j].totalPaid = currentEMI + (schedule[j].extraPayment || 0);
+                    }
+                }
+            }
+
+            totalInterest = 0;
+            let lastValidIndex = schedule.length - 1;
+            
+            for (let i = 0; i < schedule.length; i++) {
+                if (schedule[i].remainingBalance < 0) {
+                    lastValidIndex = i;
+                    break;
+                }
+                totalInterest += schedule[i].interest;
+            }
+
+            let totalPayment = loanAmount + totalInterest;
+
+            principalData = schedule.slice(0, lastValidIndex + 1).map(row => row.principal);
+            interestData = schedule.slice(0, lastValidIndex + 1).map(row => row.interest);
+
+            for (let i = 0; i <= lastValidIndex; i++) {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${schedule[i].month}</td>
+                    <td>${schedule[i].date}</td>
+                    <td>${schedule[i].beginningBalance.toFixed(2)}</td>
+                    <td>${schedule[i].emi.toFixed(2)}</td>
+                    <td>${schedule[i].interest.toFixed(2)}</td>
+                    <td>${schedule[i].principal.toFixed(2)}</td>
+                    <td>${schedule[i].remainingBalance.toFixed(2)}</td>
+                    <td><input type="number" value="${schedule[i].extraPayment}" step="0.01" onchange="extraPayments[${schedule[i].month}] = parseFloat(this.value) || 0" style="width: 60px; padding: 8px; font-size: 0.9em;"></td>
+                    <td>${schedule[i].totalPaid.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            document.getElementById('totalInterest').textContent = totalInterest.toFixed(2);
+            document.getElementById('totalPayment').textContent = totalPayment.toFixed(2);
+
+            updateChart(principalData, interestData);
+        }
+
+        function updateChart(principalData, interestData) {
+            if (chart) chart.destroy();
+            const ctx = document.getElementById('paymentChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: principalData.map((_, i) => `Month ${i + 1}`),
+                    datasets: [{
+                        label: 'Principal',
+                        data: principalData,
+                        backgroundColor: 'rgba(255, 112, 67, 0.8)',
+                        borderColor: 'rgba(255, 112, 67, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Interest',
+                        data: interestData,
+                        backgroundColor: 'rgba(156, 39, 176, 0.8)',
+                        borderColor: 'rgba(156, 39, 176, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: { stacked: true },
+                        y: { 
+                            stacked: true,
+                            beginAtZero: true,
+                            title: { display: true, text: 'Amount', color: '#00695c', font: { size: 14, weight: 'bold' } }
+                        }
+                    },
+                    plugins: {
+                        legend: { 
+                            position: 'top', 
+                            labels: { color: '#00695c', font: { size: 12, weight: 'bold' } }
+                        },
+                        title: { 
+                            display: true, 
+                            text: 'Payment Breakdown', 
+                            color: '#e91e63', 
+                            font: { size: 16, weight: 'bold' } 
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutBounce'
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function exportToCSV() {
+            const name = document.getElementById('borrowerName').value || 'N/A';
+            const loanDate = document.getElementById('loanDate').value ? formatDate(new Date(document.getElementById('loanDate').value)) : 'N/A';
+            const loanAmount = document.getElementById('loanAmount').value;
+            const tenure = document.getElementById('tenure').value;
+            const interestRate = document.getElementById('interestRate').value;
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "PRAYASH EMI SCHEDULE\n";
+            csvContent += `Name,${name}\n`;
+            csvContent += `Loan Date,${loanDate}\n`;
+            csvContent += `Loan Amount,${loanAmount}\n`;
+            csvContent += `Tenure (Months),${tenure}\n`;
+            csvContent += `Interest Rate (% per month),${interestRate}\n\n`;
+
+            const table = document.getElementById("breakdownTable");
+            const rows = Array.from(table.querySelectorAll("tr"));
+            rows.forEach(row => {
+                const cols = Array.from(row.querySelectorAll("th, td")).map(col => {
+                    const text = col.textContent.trim();
+                    return `"${text.replace(/"/g, '""')}"`;
+                });
+                csvContent += cols.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "prayash_emi_schedule.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const name = document.getElementById('borrowerName').value || 'N/A';
+            const loanDate = document.getElementById('loanDate').value ? formatDate(new Date(document.getElementById('loanDate').value)) : 'N/A';
+            const loanAmount = document.getElementById('loanAmount').value;
+            const tenure = document.getElementById('tenure').value;
+            const interestRate = document.getElementById('interestRate').value;
+
+            doc.setFontSize(18);
+            doc.setTextColor(233, 30, 99);
+            doc.text("PRAYASH EMI SCHEDULE", 105, 15, { align: 'center' });
+            doc.setFontSize(12);
+            doc.setTextColor(44, 62, 80);
+            doc.text(`Name: ${name}`, 20, 30);
+            doc.text(`Loan Date: ${loanDate}`, 20, 40);
+            doc.text(`Loan Amount: ${loanAmount}`, 20, 50);
+            doc.text(`Tenure: ${tenure} Months`, 20, 60);
+            doc.text(`Interest Rate: ${interestRate}% per month`, 20, 70);
+
+            const table = document.getElementById("breakdownTable");
+            doc.autoTable({
+                html: table,
+                startY: 80,
+                theme: 'striped',
+                headStyles: { 
+                    fillColor: [123, 31, 162], 
+                    textColor: [255, 255, 255], 
+                    fontStyle: 'bold' 
+                },
+                styles: { 
+                    fontSize: 10, 
+                    cellPadding: 3, 
+                    textColor: [44, 62, 80] 
+                },
+                columnStyles: {
+                    0: { cellWidth: 17 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 20 },
+                    5: { cellWidth: 22 },
+                    6: { cellWidth: 25 },
+                    7: { cellWidth: 18 },
+                    8: { cellWidth: 20 }
+                },
+                didDrawPage: function (data) {
+                    doc.setFontSize(8);
+                    doc.setTextColor(100);
+                    doc.text(`Page ${data.pageNumber}`, 190, 290, { align: 'right' });
+                }
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(12);
+            doc.setTextColor(44, 62, 80);
+            doc.text(`Total Interest: ${document.getElementById('totalInterest').textContent}`, 20, finalY);
+            doc.text(`Total Payment: ${document.getElementById('totalPayment').textContent}`, 20, finalY + 10);
+
+            doc.save("prayash_emi_schedule.pdf");
+        }
+
+        function clearExtraPayments() {
+            extraPayments = {};
+            generateAmortizationSchedule();
+        }
+
+        function submitExtraPayments() {
+            generateAmortizationSchedule();
+        }
+
+        calculateEMI();
+    </script>
 </body>
 </html>
