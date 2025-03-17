@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRAYASH EMI CALCULATOR</title>
+    <style>
+        /* Basic CSS Styling (You can add more as needed) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding is included in width */
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #449d44;
+        }
+        #emiDetails {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>PRAYASH EMI CALCULATOR</h2>
+
+    <form id="adminLoginForm">
+        <h3>Admin Log In</h3>
+        <label for="adminID">Admin ID:</label>
+        <input type="text" id="adminID" name="adminID">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <form id="emiForm">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName">
+
+        <label for="loanDate">Date of Loan:</label>
+        <input type="text" id="loanDate" name="loanDate">
+
+        <label for="term">Term (in Months):</label>
+        <input type="number" id="term" name="term">
+
+        <label for="interestRate">Interest Rate (% per annum):</label>
+        <input type="number" id="interestRate" name="interestRate">
+
+        <label for="loanAmount">Loan Amount:</label>
+        <input type="number" id="loanAmount" name="loanAmount">
+
+        <button type="button" onclick="calculateEMI()">Calculate EMI</button>
+        <button type="button">Download Quotation</button>
+    </form>
+
+    <div id="emiDetails">
+        <h3>EMI Details</h3>
+        <p>EMI Amount: </p>
+        <p>Total Principal: </p>
+        <p>Total Interest: </p>
+        <p>Total Payment (Rounded Up): </p>
+
+        <h4>Monthly Breakdown</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>EMI Date</th>
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Total</th>
+                    <th>Extra</th>
+                    <th>Total Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Monthly breakdown rows will be added here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Basic JavaScript (You'll need to implement the actual calculation)
+        function calculateEMI() {
+            alert("EMI calculation function needs to be implemented.");
+            // Implement your EMI calculation logic here
+        }
+    </script>
+
+</body>
+</html>
